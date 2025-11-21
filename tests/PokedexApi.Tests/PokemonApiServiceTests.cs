@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using pokedex.Api.Domain.Models;
+using pokedex.Api.Domain.Services;
 using pokedex.Api.Infrastructure.Clients;
 using pokedex.Api.Infrastructure.Models;
 using pokedex.Api.Validation;
-using Pokedex.Api.Domain.Services;
 
 namespace PokedexApi.Tests
 {

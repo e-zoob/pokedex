@@ -1,0 +1,37 @@
+using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using pokedex.Api.Domain.Models;
+using pokedex.Api.Domain.Services;
+
+namespace pokedex.Api.Endpoints;
+
+public static class PokemonEndpoints
+{
+     public static IEndpointRouteBuilder MapPokemonEndpoints(this IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("/pokemon")
+                       .WithTags("Pokemon");
+
+        group.MapGet("/{name}", async Task<Results<
+            Ok<PokemonInfoDto>,
+            BadRequest<ProblemDetails>,
+            NotFound<ProblemDetails>>>
+        (
+            string name,
+            IValidator<string> validator,
+            IPokemonApiService pokemonService,
+            HttpContext httpContext
+        ) =>
+        {
+            var result = await pokemonService.GetPokemonInfoAsync(name);
+
+            return result;
+        })
+        .WithName("GetPokemon");
+
+        return app;
+    }
+    
+
+}

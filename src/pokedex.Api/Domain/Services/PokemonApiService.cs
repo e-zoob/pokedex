@@ -7,7 +7,7 @@ using pokedex.Api.Infrastructure.Clients;
 using pokedex.Api.Validation;
 using Pokedex.Api.Infrastructure.Mapper;
 
-namespace Pokedex.Api.Domain.Services;
+namespace pokedex.Api.Domain.Services;
 
 public class PokemonApiService(IPokemonInfoClient client, IPokemonNameValidator validator, IMemoryCache cache) : IPokemonApiService
 {
@@ -41,7 +41,7 @@ public class PokemonApiService(IPokemonInfoClient client, IPokemonNameValidator 
         var dto = PokemonMapper.ToInfoDto(pokemonInfo);
 
         cache.Set(name, dto, TimeSpan.FromMinutes(5));
-        
+
         return TypedResults.Ok(dto);
     }
 }
