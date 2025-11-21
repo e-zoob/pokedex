@@ -11,13 +11,11 @@ public class PokemonNameValidator: AbstractValidator<string>
             .WithMessage("Name cannot be empty.");
         
         RuleFor(x => x)
-            .Matches("^[a-z]+$")
-            .WithMessage("Name must contain only lowercase letters.");
+            .Matches("^[a-zA-Z]+$")
+            .WithMessage("Name must contain only letters.");
         
-        RuleFor(x => x.Length)
-            .GreaterThanOrEqualTo(2)
-            .LessThanOrEqualTo(20)
-            .WithMessage("Name length must be between 2 and 20 characters.");
-    }
-    
+        RuleFor(x => x)
+            .Length(3,20)
+            .WithMessage("Name length must be between 3 and 20 characters.");
+    }   
 }
