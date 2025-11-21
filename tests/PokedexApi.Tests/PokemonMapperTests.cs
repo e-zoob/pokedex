@@ -6,14 +6,6 @@ namespace PokedexApi.Tests;
 
 public class PokemonMapperTests
 {
-
-    private readonly PokemonMapper Mapper;
-
-    public PokemonMapperTests()
-    {
-        Mapper = new PokemonMapper();
-    }
-
     [Fact]
     public void ToInfoDto_WithCompleteData_MapsAllFieldsCorrectly()
     {
@@ -34,7 +26,7 @@ public class PokemonMapperTests
         };
 
         // Act
-        var result = Mapper.ToInfoDto(model);
+        var result = PokemonMapper.ToInfoDto(model);
 
         // Assert
         result.Should().NotBeNull();
@@ -64,7 +56,7 @@ public class PokemonMapperTests
         };
 
         // Act
-        var result = Mapper.ToInfoDto(model);
+        var result = PokemonMapper.ToInfoDto(model);
 
         // Assert
         result.Description.Should().Be("It was created by a scientist after years of horrific gene splicing.");
@@ -103,7 +95,7 @@ public class PokemonMapperTests
         };
 
         // Act
-        var result = Mapper.ToInfoDto(model);
+        var result = PokemonMapper.ToInfoDto(model);
 
         // Assert
         result.Description.Should().Be("English description here");
@@ -134,7 +126,7 @@ public class PokemonMapperTests
         };
 
         // Act
-        var result = Mapper.ToInfoDto(model);
+        var result = PokemonMapper.ToInfoDto(model);
 
         // Assert
         result.Description.Should().Be("No english description available");
@@ -153,7 +145,7 @@ public class PokemonMapperTests
         };
 
         // Act
-        var result = Mapper.ToInfoDto(model);
+        var result = PokemonMapper.ToInfoDto(model);
 
         // Assert
         result.Description.Should().Be("No english description available");
@@ -172,7 +164,7 @@ public class PokemonMapperTests
         };
 
         // Act
-        var result = Mapper.ToInfoDto(model);
+        var result = PokemonMapper.ToInfoDto(model);
 
         // Assert
         result.Description.Should().Be("No english description available");
@@ -201,7 +193,7 @@ public class PokemonMapperTests
         };
 
         // Act
-        var result = Mapper.ToInfoDto(model);
+        var result = PokemonMapper.ToInfoDto(model);
 
         // Assert
         result.Habitat.Should().Be("Pokemon habitat is unknown");
@@ -229,7 +221,7 @@ public class PokemonMapperTests
         };
 
         // Act
-        var result = Mapper.ToInfoDto(model);
+        var result = PokemonMapper.ToInfoDto(model);
 
         // Assert
         result.IsLegendary.Should().Be(isLegendary);

@@ -4,9 +4,9 @@ using pokedex.Api.Infrastructure.Models;
 
 namespace Pokedex.Api.Infrastructure.Mapper;
 
-public partial class PokemonMapper
+public static partial  class PokemonMapper
 {
-    public PokemonInfoDto ToInfoDto(PokemonInfoApiModel model)
+    public static PokemonInfoDto ToInfoDto(PokemonInfoApiModel model)
     {
         var englishEntry = model.FlavorTextEntries?
             .FirstOrDefault( e => e.Language.Name == "en");

@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace pokedex.Api.Validation;
 
-public class PokemonNameValidator: AbstractValidator<string>
+public class PokemonNameValidator: AbstractValidator<string>, IPokemonNameValidator
 {
     public PokemonNameValidator()
     {
