@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using pokedex.Api.Domain.Models;
 using pokedex.Api.Domain.Services;
 using pokedex.Api.Infrastructure.Clients;
@@ -8,7 +9,7 @@ using Pokedex.Api.Infrastructure.Mapper;
 
 namespace Pokedex.Api.Domain.Services;
 
-public class PokemonApiService(IPokemonInfoClient client, IPokemonNameValidator validator) : IPokemonApiService
+public class PokemonApiService(IPokemonInfoClient client, IPokemonNameValidator validator, IMemoryCache cache) : IPokemonApiService
 {
     public async Task<Results<Ok<PokemonInfoDto>, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> GetPokemonInfoAsync(string name)
     {
@@ -22,6 +23,9 @@ public class PokemonApiService(IPokemonInfoClient client, IPokemonNameValidator 
                 Detail = validation.Errors.First().ErrorMessage
             });
         }
+        
+        if (cache.TryGetValue(name, out PokemonInfoDto? cached))
+            return TypedResults.Ok(cached);
 
         var pokemonInfo = await client.GetPokemonInfoAsync(name);
 
@@ -35,6 +39,9 @@ public class PokemonApiService(IPokemonInfoClient client, IPokemonNameValidator 
         }
 
         var dto = PokemonMapper.ToInfoDto(pokemonInfo);
+
+        cache.Set(name, dto, TimeSpan.FromMinutes(5));
+        
         return TypedResults.Ok(dto);
     }
 }
