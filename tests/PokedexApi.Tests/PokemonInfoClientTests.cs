@@ -1,6 +1,8 @@
 using System.Net;
 using System.Text.Json;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Contrib.HttpClient;
@@ -15,7 +17,7 @@ public class PokemonInfoClientTests
     private readonly Mock<HttpMessageHandler> HandlerMock;
     private readonly HttpClient HttpClient;
     private readonly IOptions<PokemonApiOptions> PokemonApiOptions;
-
+    private readonly ILogger<PokemonInfoClient> logger = NullLogger<PokemonInfoClient>.Instance;
     public PokemonInfoClientTests()
     {
         HandlerMock = new Mock<HttpMessageHandler>();
@@ -24,6 +26,7 @@ public class PokemonInfoClientTests
         { 
             BaseUri = "https://pokeapi.co/api/v2/" 
         });
+
     }
 
     [Fact]
@@ -57,7 +60,7 @@ public class PokemonInfoClientTests
             .SetupRequest(HttpMethod.Get, $"https://pokeapi.co/api/v2/pokemon-species/{pokemonName}")
             .ReturnsJsonResponse(expectedModel);
 
-        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions);
+        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions, logger);
 
         // Act
         var result = await client.GetPokemonInfoAsync(pokemonName);
@@ -87,7 +90,7 @@ public class PokemonInfoClientTests
             .SetupRequest(HttpMethod.Get, $"https://pokeapi.co/api/v2/pokemon-species/{pokemonName}")
             .ReturnsJsonResponse(responseModel);
 
-        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions);
+        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions, logger);
 
         // Act
         var result = await client.GetPokemonInfoAsync(pokemonName);
@@ -109,8 +112,8 @@ public class PokemonInfoClientTests
             .SetupRequest(HttpMethod.Get, $"https://pokeapi.co/api/v2/pokemon-species/{pokemonName}")
             .ReturnsResponse(HttpStatusCode.NotFound);
 
-        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions);
-
+        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions, logger);
+        
         // Act
         var result = await client.GetPokemonInfoAsync(pokemonName);
 
@@ -128,8 +131,8 @@ public class PokemonInfoClientTests
             .SetupRequest(HttpMethod.Get, $"https://pokeapi.co/api/v2/pokemon-species/{pokemonName}")
             .ReturnsResponse(HttpStatusCode.InternalServerError);
 
-        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions);
-
+        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions, logger);
+        
         // Act & Assert
         await Assert.ThrowsAsync<HttpRequestException>(
             () => client.GetPokemonInfoAsync(pokemonName)
@@ -147,8 +150,8 @@ public class PokemonInfoClientTests
             .SetupRequest(HttpMethod.Get, $"https://pokeapi.co/api/v2/pokemon-species/{pokemonName}")
             .Throws(new TaskCanceledException("Request timed out"));
 
-        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions);
-
+        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions, logger);  
+        
         // Act & Assert
         await Assert.ThrowsAsync<TaskCanceledException>(
             () => client.GetPokemonInfoAsync(pokemonName)
@@ -165,8 +168,8 @@ public class PokemonInfoClientTests
             .SetupRequest(HttpMethod.Get, $"https://pokeapi.co/api/v2/pokemon-species/{pokemonName}")
             .ReturnsJsonResponse<PokemonInfoApiModel>(null!);
 
-        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions);
-
+        var client = new PokemonInfoClient(HttpClient, PokemonApiOptions, logger);
+        
         // Act
         var result = await client.GetPokemonInfoAsync(pokemonName);
 

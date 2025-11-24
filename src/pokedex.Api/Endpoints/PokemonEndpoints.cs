@@ -22,9 +22,12 @@ public static class PokemonEndpoints
             string name,
             IPokemonNameValidator validator,
             IPokemonApiService pokemonService,
-            HttpContext httpContext
+            HttpContext httpContext,
+            ILogger<Program> logger
         ) =>
         {
+            logger.LogInformation("GetPokemon endpoint called for {Name}", name);
+
             var result = await pokemonService.GetPokemonInfoAsync(name);
 
             return result;
@@ -33,6 +36,4 @@ public static class PokemonEndpoints
 
         return app;
     }
-    
-
 }

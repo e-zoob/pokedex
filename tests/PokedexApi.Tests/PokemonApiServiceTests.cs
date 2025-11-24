@@ -1,9 +1,10 @@
 using FluentAssertions;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using pokedex.Api.Domain.Models;
 using pokedex.Api.Domain.Services;
@@ -18,13 +19,14 @@ namespace PokedexApi.Tests
         private readonly Mock<IPokemonInfoClient> clientMock = new();
         private readonly Mock<IPokemonNameValidator> validatorMock = new();
         private readonly IMemoryCache memoryCache;
-
+        private readonly ILogger<PokemonApiService> logger = NullLogger<PokemonApiService>.Instance;
         public PokemonApiServiceTests()
         {
             memoryCache = new MemoryCache(new MemoryCacheOptions());
         }
 
-        private PokemonApiService CreateService() => new(clientMock.Object, validatorMock.Object, memoryCache);
+        
+        private PokemonApiService CreateService() => new(clientMock.Object, validatorMock.Object, memoryCache, logger);
 
 
         [Fact]
