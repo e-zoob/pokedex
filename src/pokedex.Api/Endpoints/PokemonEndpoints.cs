@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using pokedex.Api.Domain.Models;
 using pokedex.Api.Domain.Services;
+using pokedex.Api.Validation;
 
 namespace pokedex.Api.Endpoints;
 
@@ -19,7 +20,7 @@ public static class PokemonEndpoints
             NotFound<ProblemDetails>>>
         (
             string name,
-            IValidator<string> validator,
+            IPokemonNameValidator validator,
             IPokemonApiService pokemonService,
             HttpContext httpContext
         ) =>
