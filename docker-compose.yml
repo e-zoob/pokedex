@@ -1,0 +1,11 @@
+services:
+  pokedex-api:
+    build:
+      context: .
+      dockerfile: src/Pokedex.Api/Dockerfile
+    ports:
+      - "5283:5283"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5283
+    restart: on-failure
