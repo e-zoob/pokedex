@@ -7,5 +7,7 @@ namespace pokedex.Api.Domain.Services;
 
 public interface IPokemonApiService
 {
-    Task<Results<Ok<PokemonInfoDto>, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> GetPokemonInfoAsync(string pokemonName);        
+    Task<Results<Ok<PokemonInfoDto>, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> GetPokemonInfoAsync(string pokemonName);  
+    Task<Results<Ok<PokemonInfoDto>, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> GetTranslatedPokemonInfoAsync(string pokemonName);  
+
 }
