@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      - name: Restore
+        run: dotnet restore src/Pokedex.Api
+
+      - name: Build
+        run: dotnet build src/Pokedex.Api -c Release --no-restore
+
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal
+
+      - name: Publish project
+        run: dotnet publish src/Pokedex.Api -c Release -o ./publish --no-build
+
+      - name: Build Docker image (local runner image)
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: src/Pokedex.Api/Dockerfile
+          push: false
+          tags: pokedex-api:ci-${{ github.sha }}
