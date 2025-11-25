@@ -11,17 +11,15 @@ public class PokemonInfoClient(
     ILogger<PokemonInfoClient> logger
     ) : IPokemonInfoClient
 {
-        private readonly HttpClient HttpClient = httpClient;
         private readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNameCaseInsensitive = true
         };
     public async Task<PokemonInfoApiModel?> GetPokemonInfoAsync(string pokemonName)
     {
-        HttpClient.BaseAddress ??= new Uri(options.Value.BaseUri);
+        httpClient.BaseAddress ??= new Uri(options.Value.BaseUri);
 
-        logger.LogInformation("Fetching info for Pokémon: {PokemonName}", pokemonName);
-        var response = await HttpClient.GetAsync($"pokemon-species/{pokemonName}");
+        var response = await httpClient.GetAsync($"{pokemonName}");
 
         if ( response.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
