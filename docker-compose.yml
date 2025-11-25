@@ -2,7 +2,7 @@ services:
   pokedex-api:
     build:
       context: .
-      dockerfile: src/Pokedex.Api/Dockerfile
+      dockerfile: ./src/Pokedex.Api/Dockerfile
     ports:
       - "5283:5283"
     environment:
