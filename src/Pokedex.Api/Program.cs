@@ -6,6 +6,8 @@ using pokedex.Api.Endpoints;
 using pokedex.Api.Infrastructure.Clients;
 using pokedex.Api.Options;
 using pokedex.Api.Validation;
+using Pokedex.Api.Domain.Services;
+using Pokedex.Api.Infrastructure.Clients;
 using Serilog;
 using Serilog.Events;
 
@@ -37,6 +39,8 @@ builder.Services.AddHttpClient<IPokemonInfoClient, PokemonInfoClient>();
 // business
 builder.Services.AddScoped<IPokemonApiService, PokemonApiService>();
 builder.Services.AddScoped<IPokemonNameValidator, PokemonNameValidator>();
+builder.Services.AddScoped<ITranslationClient, ITranslationClient>();
+builder.Services.AddScoped<ITranslationApiService, TranslationApiService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
