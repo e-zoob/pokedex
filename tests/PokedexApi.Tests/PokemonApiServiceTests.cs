@@ -11,6 +11,7 @@ using pokedex.Api.Domain.Services;
 using pokedex.Api.Infrastructure.Clients;
 using pokedex.Api.Infrastructure.Models;
 using pokedex.Api.Validation;
+using Pokedex.Api.Domain.Services;
 
 namespace PokedexApi.Tests
 {
@@ -18,6 +19,7 @@ namespace PokedexApi.Tests
     {
         private readonly Mock<IPokemonInfoClient> clientMock = new();
         private readonly Mock<IPokemonNameValidator> validatorMock = new();
+        private readonly Mock<ITranslationApiService> translationServiceMock= new();
         private readonly IMemoryCache memoryCache;
         private readonly ILogger<PokemonApiService> logger = NullLogger<PokemonApiService>.Instance;
         public PokemonApiServiceTests()
@@ -26,7 +28,7 @@ namespace PokedexApi.Tests
         }
 
         
-        private PokemonApiService CreateService() => new(clientMock.Object, validatorMock.Object, memoryCache, logger);
+        private PokemonApiService CreateService() => new(clientMock.Object, validatorMock.Object, translationServiceMock.Object, memoryCache, logger);
 
 
         [Fact]
