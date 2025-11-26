@@ -48,7 +48,7 @@ namespace PokedexApi.Tests
             var service = CreateService();
 
             // Act
-            var result = await service.GetPokemonInfoAsync(name);
+            var result = await service.GetPokemonInfoAsync(name, It.IsAny<CancellationToken>());
 
             // Assert
             var problemDetails = result.Result switch
@@ -71,13 +71,13 @@ namespace PokedexApi.Tests
             validatorMock.Setup(v => v.Validate(name))
                 .Returns(new ValidationResult());
 
-            clientMock.Setup(c => c.GetPokemonInfoAsync(name))
+            clientMock.Setup(c => c.GetPokemonInfoAsync(name, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((PokemonInfoApiModel?)null);
 
             var service = CreateService();
 
             // Act
-            var result = await service.GetPokemonInfoAsync(name);
+            var result = await service.GetPokemonInfoAsync(name, It.IsAny<CancellationToken>());
 
             // Assert
             var problemDetails = result.Result switch
@@ -110,13 +110,13 @@ namespace PokedexApi.Tests
                 ]
             };
 
-            clientMock.Setup(c => c.GetPokemonInfoAsync(name))
+            clientMock.Setup(c => c.GetPokemonInfoAsync(name, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apiModel);
 
             var service = CreateService();
 
             // Act
-            var result = await service.GetPokemonInfoAsync(name);
+            var result = await service.GetPokemonInfoAsync(name, It.IsAny<CancellationToken>());
 
             // Assert
             var pokemonInfo = result.Result switch
@@ -156,7 +156,7 @@ namespace PokedexApi.Tests
             var service = CreateService();
 
             // Act
-            var result = await service.GetPokemonInfoAsync(pokemonName);
+            var result = await service.GetPokemonInfoAsync(pokemonName, It.IsAny<CancellationToken>());
 
             // Assert
             var pokemonInfo = result.Result switch
@@ -168,7 +168,7 @@ namespace PokedexApi.Tests
             pokemonInfo.Should().NotBeNull();
             pokemonInfo.Should().BeOfType<PokemonInfoDto>();
 
-            clientMock.Verify(c => c.GetPokemonInfoAsync(It.IsAny<string>()), Times.Never);
+            clientMock.Verify(c => c.GetPokemonInfoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         }
         [Fact]
         public async Task GetPokemonInfoAsync_WhenNotCached_CachesValue()
@@ -189,7 +189,7 @@ namespace PokedexApi.Tests
                 ]
             };
 
-            clientMock.Setup(c => c.GetPokemonInfoAsync(pokemonName))
+            clientMock.Setup(c => c.GetPokemonInfoAsync(pokemonName, It.IsAny<CancellationToken>()))
                     .ReturnsAsync(apiModel);
 
             validatorMock.Setup(v => v.Validate(pokemonName))
@@ -198,8 +198,8 @@ namespace PokedexApi.Tests
             var service = CreateService();
 
             // Act
-            var result1 = await service.GetPokemonInfoAsync(pokemonName);
-            var result2 = await service.GetPokemonInfoAsync(pokemonName);
+            var result1 = await service.GetPokemonInfoAsync(pokemonName, It.IsAny<CancellationToken>());
+            var result2 = await service.GetPokemonInfoAsync(pokemonName, It.IsAny<CancellationToken>());
 
 
             var pokemonInfo1 = result1.Result switch
@@ -221,7 +221,7 @@ namespace PokedexApi.Tests
             pokemonInfo2.Should().NotBeNull();
             pokemonInfo2.Should().BeOfType<PokemonInfoDto>();
 
-            clientMock.Verify(c => c.GetPokemonInfoAsync(pokemonName), Times.Once);
+            clientMock.Verify(c => c.GetPokemonInfoAsync(pokemonName, It.IsAny<CancellationToken>()), Times.Once);
         }
 
 

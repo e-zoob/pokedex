@@ -13,7 +13,7 @@ public class TranslationClient(
     {
         PropertyNameCaseInsensitive = true
     };
-    public async Task<HttpResponseMessage?> TranslateAsync(string text, string style)
+    public async Task<HttpResponseMessage?> TranslateAsync(string text, string style, CancellationToken cancellationToken = default)
     {
         httpClient.BaseAddress ??= new Uri(options.Value.BaseUri);
 
@@ -22,6 +22,6 @@ public class TranslationClient(
             new KeyValuePair<string, string>("text", text)
         ]);
 
-        return await httpClient.PostAsync($"{style}.json", content);
+        return await httpClient.PostAsync($"{style}.json", content, cancellationToken);
     }
 }

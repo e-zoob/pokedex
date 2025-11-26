@@ -11,16 +11,16 @@ public class TranslationApiService(ITranslationClient client) : ITranslationApiS
         PropertyNameCaseInsensitive = true
     };
 
-    public async Task<string> TranslateAsync(string originalText, string style)
+    public async Task<string> TranslateAsync(string originalText, string style, CancellationToken cancellationToken = default)
     {
-        var response = await client.TranslateAsync(originalText, style);
+        var response = await client.TranslateAsync(originalText, style, cancellationToken);
 
         if (response is null || !response.IsSuccessStatusCode)
             return originalText;
 
         try
         {
-            var json = await response.Content.ReadAsStringAsync();
+            var json = await response.Content.ReadAsStringAsync(cancellationToken);
 
             var model = JsonSerializer.Deserialize<FunTranslationResponse>(json, JsonOptions);
 

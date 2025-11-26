@@ -17,7 +17,7 @@ public class PokemonApiService(
     ILogger<PokemonApiService> logger
     ) : IPokemonApiService
 {
-    public async Task<Results<Ok<PokemonInfoDto>, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> GetPokemonInfoAsync(string name)
+    public async Task<Results<Ok<PokemonInfoDto>, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> GetPokemonInfoAsync(string name, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Getting pokemon info for {Name}", name);
 
@@ -40,7 +40,7 @@ public class PokemonApiService(
             return TypedResults.Ok(cached);
         }
 
-        var pokemonInfo = await client.GetPokemonInfoAsync(name);
+        var pokemonInfo = await client.GetPokemonInfoAsync(name, cancellationToken);
 
         if(pokemonInfo is null)
         {
@@ -60,11 +60,7 @@ public class PokemonApiService(
         return TypedResults.Ok(dto);
     }
 
-    public async Task<Results<
-        Ok<PokemonInfoDto>,
-        BadRequest<ProblemDetails>,
-        NotFound<ProblemDetails>>>
-        GetTranslatedPokemonInfoAsync(string name)
+    public async Task<Results<Ok<PokemonInfoDto>,BadRequest<ProblemDetails>,NotFound<ProblemDetails>>> GetTranslatedPokemonInfoAsync(string name, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Getting pokemon info for {Name}", name);
 
@@ -80,7 +76,7 @@ public class PokemonApiService(
             });
         }
 
-        var info = await client.GetPokemonInfoAsync(name);
+        var info = await client.GetPokemonInfoAsync(name, cancellationToken);
         if (info is null)
         {
             return TypedResults.NotFound(new ProblemDetails
@@ -104,7 +100,7 @@ public class PokemonApiService(
             ? "yoda"
             : "shakespeare";
 
-        string translated = await translationService.TranslateAsync(description, style);
+        string translated = await translationService.TranslateAsync(description, style, cancellationToken);
 
         var dto = PokemonMapper.ToInfoDto(info) with { Description = translated };
 

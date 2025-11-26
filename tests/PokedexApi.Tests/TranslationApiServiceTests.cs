@@ -37,14 +37,14 @@ public class TranslationApiServiceTests
         };
 
         clientMock
-            .Setup(c => c.TranslateAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .Setup(c => c.TranslateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
         // Act
-        var result = await service.TranslateAsync(original, "yoda");
+        var result = await service.TranslateAsync(original, "yoda", It.IsAny<CancellationToken>());
 
         // Assert
-        clientMock.Verify(c => c.TranslateAsync(original, "yoda"), Times.Once);
+        clientMock.Verify(c => c.TranslateAsync(original, "yoda", It.IsAny<CancellationToken>()), Times.Once);
         Assert.Equal(translated, result);
     }
 
@@ -55,7 +55,7 @@ public class TranslationApiServiceTests
             .Setup(c => c.TranslateAsync("hello", "yoda"))
             .ReturnsAsync((HttpResponseMessage?)null);
 
-        var result = await service.TranslateAsync("hello", "yoda");
+        var result = await service.TranslateAsync("hello", "yoda", It.IsAny<CancellationToken>());
 
         Assert.Equal("hello", result);
     }
@@ -66,10 +66,10 @@ public class TranslationApiServiceTests
         var response = new HttpResponseMessage(HttpStatusCode.BadRequest);
 
         clientMock
-            .Setup(c => c.TranslateAsync("hello", "yoda"))
+            .Setup(c => c.TranslateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
-        var result = await service.TranslateAsync("hello", "yoda");
+        var result = await service.TranslateAsync("hello", "yoda", It.IsAny<CancellationToken>());
 
         Assert.Equal("hello", result);
     }
@@ -83,10 +83,10 @@ public class TranslationApiServiceTests
         };
 
         clientMock
-            .Setup(c => c.TranslateAsync("hello", "yoda"))
+            .Setup(c => c.TranslateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
-        var result = await service.TranslateAsync("hello", "yoda");
+        var result = await service.TranslateAsync("hello", "yoda", It.IsAny<CancellationToken>());
 
         Assert.Equal("hello", result);
     }

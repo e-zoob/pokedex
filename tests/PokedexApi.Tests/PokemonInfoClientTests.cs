@@ -63,7 +63,7 @@ public class PokemonInfoClientTests
         var client = new PokemonInfoClient(HttpClient, PokemonApiOptions, logger);
 
         // Act
-        var result = await client.GetPokemonInfoAsync(pokemonName);
+        var result = await client.GetPokemonInfoAsync(pokemonName, It.IsAny<CancellationToken>());
 
         // Assert
         result.Should().NotBeNull();
@@ -93,7 +93,7 @@ public class PokemonInfoClientTests
         var client = new PokemonInfoClient(HttpClient, PokemonApiOptions, logger);
 
         // Act
-        var result = await client.GetPokemonInfoAsync(pokemonName);
+        var result = await client.GetPokemonInfoAsync(pokemonName, It.IsAny<CancellationToken>());
 
         // Assert
         result.Should().NotBeNull();
@@ -115,7 +115,7 @@ public class PokemonInfoClientTests
         var client = new PokemonInfoClient(HttpClient, PokemonApiOptions, logger);
         
         // Act
-        var result = await client.GetPokemonInfoAsync(pokemonName);
+        var result = await client.GetPokemonInfoAsync(pokemonName, It.IsAny<CancellationToken>());
 
         // Assert
          result.Should().BeNull();

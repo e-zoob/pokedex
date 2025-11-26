@@ -24,12 +24,13 @@ public static class PokemonEndpoints
             IPokemonNameValidator validator,
             IPokemonApiService pokemonService,
             HttpContext httpContext,
-            ILogger<Program> logger
+            ILogger<Program> logger,
+            CancellationToken cancellationToken = default
         ) =>
         {
             logger.LogDebug("GetPokemon endpoint called for {Name}", name);
 
-            return await pokemonService.GetPokemonInfoAsync(name);
+            return await pokemonService.GetPokemonInfoAsync(name, cancellationToken);
 
         })
         .WithName("GetPokemon");
@@ -45,12 +46,13 @@ public static class PokemonEndpoints
             IPokemonNameValidator validator,
             ITranslationApiService translationService,
             HttpContext httpContext,
-            ILogger<Program> logger
+            ILogger<Program> logger,
+            CancellationToken cancellationToken = default
         ) =>
         {
             logger.LogDebug("GetPokemonTranslated endpoint called for {Name}", name);
 
-            return await pokemonService.GetTranslatedPokemonInfoAsync(name);
+            return await pokemonService.GetTranslatedPokemonInfoAsync(name, cancellationToken);
         })
         .WithName("GetPokemonTranslated");
 

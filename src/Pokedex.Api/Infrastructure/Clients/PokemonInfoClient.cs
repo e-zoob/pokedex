@@ -15,12 +15,11 @@ public class PokemonInfoClient(
         {
             PropertyNameCaseInsensitive = true
         };
-    public async Task<PokemonInfoApiModel?> GetPokemonInfoAsync(string pokemonName)
+    public async Task<PokemonInfoApiModel?> GetPokemonInfoAsync(string pokemonName, CancellationToken cancellationToken = default)
     {
         httpClient.BaseAddress ??= new Uri(options.Value.BaseUri);
 
-        var response = await httpClient.GetAsync($"{pokemonName}");
-
+        var response = await httpClient.GetAsync($"{pokemonName}", cancellationToken);
         if ( response.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
             logger.LogInformation("External API returned 404 for {Name}", pokemonName);
