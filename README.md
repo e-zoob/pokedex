@@ -17,7 +17,7 @@ Minimal ASP.NET 10 API to get Pokémon information and translated descriptions.
 ---
 
 ## Requirements
-* git( for cloning the repository)
+* git (for cloning the repository)
 * [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) (only for local run or build).
 * Docker & Docker Compose (optional for containerized run).
 
@@ -107,7 +107,7 @@ Transfer-Encoding: chunked
 ## Running with Docker Compose
 
 1. **Build and run**:
-
+   * Run this command in the project root folder containing `docker-compose.yml`:
 ```bash
 docker-compose up --build
 ```
