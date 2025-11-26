@@ -24,7 +24,7 @@ public class PokemonInfoClientTests
         HttpClient = new HttpClient(HandlerMock.Object);
         PokemonApiOptions = Options.Create(new PokemonApiOptions 
         { 
-            BaseUri = "https://pokeapi.co/api/v2/" 
+                    BaseUri = "https://pokeapi.co/api/v2/pokemon-species/" 
         });
 
     }

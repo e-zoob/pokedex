@@ -6,6 +6,11 @@ namespace Pokedex.Api.Domain.Services;
 
 public class TranslationApiService(ITranslationClient client) : ITranslationApiService
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public async Task<string> TranslateAsync(string originalText, string style)
     {
         var response = await client.TranslateAsync(originalText, style);
@@ -17,7 +22,7 @@ public class TranslationApiService(ITranslationClient client) : ITranslationApiS
         {
             var json = await response.Content.ReadAsStringAsync();
 
-            var model = JsonSerializer.Deserialize<FunTranslationResponse>(json);
+            var model = JsonSerializer.Deserialize<FunTranslationResponse>(json, JsonOptions);
 
             return model?.Contents?.Translated ?? originalText;
         }
