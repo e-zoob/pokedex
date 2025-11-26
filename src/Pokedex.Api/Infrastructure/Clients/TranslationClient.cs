@@ -6,7 +6,8 @@ namespace Pokedex.Api.Infrastructure.Clients;
 
 public class TranslationClient(
     HttpClient httpClient,
-    IOptions<TranslationApiOptions> options
+    IOptions<TranslationApiOptions> options,
+    ILogger<TranslationClient> logger
 ) : ITranslationClient
 {
     private readonly JsonSerializerOptions JsonOptions = new()
@@ -14,13 +15,15 @@ public class TranslationClient(
         PropertyNameCaseInsensitive = true
     };
     public async Task<HttpResponseMessage?> TranslateAsync(string text, string style, CancellationToken cancellationToken = default)
-    {
+    {        
         httpClient.BaseAddress ??= new Uri(options.Value.BaseUri);
 
         using var content = new FormUrlEncodedContent(
         [
             new KeyValuePair<string, string>("text", text)
         ]);
+
+        logger.LogDebug("Sending translation request for style {Style} with text: {Text}", style, text);
 
         return await httpClient.PostAsync($"{style}.json", content, cancellationToken);
     }
