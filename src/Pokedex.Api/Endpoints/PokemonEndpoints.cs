@@ -12,10 +12,10 @@ public static class PokemonEndpoints
 {
     public static IEndpointRouteBuilder MapPokemonEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/pokemon")
+        var pokemonInfoGroup = app.MapGroup("/pokemon")
                        .WithTags("Pokemon");
 
-        group.MapGet("/{name}", async Task<Results<
+        pokemonInfoGroup.MapGet("/{name}", async Task<Results<
             Ok<PokemonInfoDto>,
             BadRequest<ProblemDetails>,
             NotFound<ProblemDetails>>>
@@ -35,7 +35,10 @@ public static class PokemonEndpoints
         })
         .WithName("GetPokemon");
 
-        group.MapGet("/translated/{name}", async Task<Results<
+        var translatedGroup = app.MapGroup("/pokemon/translated")
+                                 .WithTags("Pokemon - Translated");
+
+        translatedGroup.MapGet("/{name}", async Task<Results<
             Ok<PokemonInfoDto>,
             BadRequest<ProblemDetails>,
             NotFound<ProblemDetails>>>
