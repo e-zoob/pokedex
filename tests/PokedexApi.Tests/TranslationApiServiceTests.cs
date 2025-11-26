@@ -1,5 +1,7 @@
 using System.Net;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Pokedex.Api.Domain.Services;
 using Pokedex.Api.Infrastructure.Clients;
@@ -10,10 +12,12 @@ public class TranslationApiServiceTests
 {
     private readonly Mock<ITranslationClient> clientMock = new();
     private readonly TranslationApiService service;
+    private readonly ILogger<TranslationApiService> logger = NullLogger<TranslationApiService>.Instance;
+    
 
     public TranslationApiServiceTests()
     {
-        service = new TranslationApiService(clientMock.Object);
+        service = new TranslationApiService(clientMock.Object, logger);
     }
 
     [Fact]
