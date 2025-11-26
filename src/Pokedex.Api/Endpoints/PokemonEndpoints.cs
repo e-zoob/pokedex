@@ -36,7 +36,7 @@ public static class PokemonEndpoints
         .WithName("GetPokemon");
 
         var translatedGroup = app.MapGroup("/pokemon/translated")
-                                 .WithTags("Pokemon - Translated");
+                                 .WithTags("Pokemon - Description translated");
 
         translatedGroup.MapGet("/{name}", async Task<Results<
             Ok<PokemonInfoDto>,
