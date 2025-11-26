@@ -7,10 +7,10 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup .NET
@@ -26,22 +26,11 @@ jobs:
           restore-keys: |
             nuget-${{ runner.os }}-
 
-      - name: Restore
+      - name: Restore dependencies
         run: dotnet restore src/Pokedex.Api
 
-      - name: Build
+      - name: Build project
         run: dotnet build src/Pokedex.Api -c Release --no-restore
 
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal
-
-      - name: Publish project
-        run: dotnet publish src/Pokedex.Api -c Release -o ./publish --no-build
-
-      - name: Build Docker image (local runner image)
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: src/Pokedex.Api/Dockerfile
-          push: false
-          tags: pokedex-api:ci-${{ github.sha }}
+        run: dotnet test src/Pokedex.Api --no-build --verbosity normal
