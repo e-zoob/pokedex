@@ -21,7 +21,6 @@ public static class PokemonEndpoints
             NotFound<ProblemDetails>>>
         (
             string name,
-            IPokemonNameValidator validator,
             IPokemonApiService pokemonService,
             HttpContext httpContext,
             ILogger<Program> logger,
@@ -46,8 +45,6 @@ public static class PokemonEndpoints
         (
             string name,
             IPokemonApiService pokemonService,
-            IPokemonNameValidator validator,
-            ITranslationApiService translationService,
             HttpContext httpContext,
             ILogger<Program> logger,
             CancellationToken cancellationToken = default
