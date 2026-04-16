@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using pokedex.Api.Domain.Models;
 using pokedex.Api.Domain.Services;
-using pokedex.Api.Validation;
-using Pokedex.Api.Domain.Services;
 
 namespace pokedex.Api.Endpoints;
 
@@ -22,7 +20,6 @@ public static class PokemonEndpoints
         (
             string name,
             IPokemonApiService pokemonService,
-            HttpContext httpContext,
             ILogger<Program> logger,
             CancellationToken cancellationToken = default
         ) =>
@@ -45,7 +42,6 @@ public static class PokemonEndpoints
         (
             string name,
             IPokemonApiService pokemonService,
-            HttpContext httpContext,
             ILogger<Program> logger,
             CancellationToken cancellationToken = default
         ) =>
