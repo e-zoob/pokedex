@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using pokedex.Api.Domain.Models;
 using pokedex.Api.Infrastructure.Clients;
+using pokedex.Api.Infrastructure.Models;
 using pokedex.Api.Validation;
 using Pokedex.Api.Domain.Services;
 using Pokedex.Api.Infrastructure.Mapper;
@@ -33,14 +34,8 @@ public class PokemonApiService(
                 Detail = validation.Errors.First().ErrorMessage
             });
         }
-        
-        if (cache.TryGetValue(name, out PokemonInfoDto? cached))
-        {
-            logger.LogDebug("Cache hit for {Name}", name);
-            return TypedResults.Ok(cached);
-        }
 
-        var pokemonInfo = await client.GetPokemonInfoAsync(name, cancellationToken);
+        var pokemonInfo = await GetPokemonInfoModelAsync(name, cancellationToken);
 
         if(pokemonInfo is null)
         {
@@ -75,8 +70,8 @@ public class PokemonApiService(
                 Detail = validation.Errors.First().ErrorMessage
             });
         }
-
-        var info = await client.GetPokemonInfoAsync(name, cancellationToken);
+        
+        var info = await GetPokemonInfoModelAsync(name, cancellationToken);
         if (info is null)
         {
             return TypedResults.NotFound(new ProblemDetails
@@ -99,11 +94,42 @@ public class PokemonApiService(
         string style = info.Habitat?.Name?.ToLower() == "cave" || info.IsLegendary
             ? "yoda"
             : "shakespeare";
+        
+        var normalizedName = name.Trim().ToLowerInvariant();
 
+        var translatedCacheKey = $"pokemon-translated:{normalizedName}";
+        
+        if(cache.TryGetValue(translatedCacheKey, out PokemonInfoDto? cacheTranslated))
+        {
+            return TypedResults.Ok(cacheTranslated);
+        }
+        
         string translated = await translationService.TranslateAsync(description, style, cancellationToken);
 
         var dto = PokemonMapper.ToInfoDto(info) with { Description = translated };
 
+        cache.Set(translatedCacheKey, dto, TimeSpan.FromMinutes(5));
+
         return TypedResults.Ok(dto);
+    }
+
+    private async Task<PokemonInfoApiModel?> GetPokemonInfoModelAsync(string name, CancellationToken cancellationToken)
+    {
+        var normalizedName = name.Trim().ToLowerInvariant();
+        var cacheKey = $"pokemon-info:{normalizedName}";
+
+        if(cache.TryGetValue(cacheKey, out PokemonInfoApiModel? cached))
+        {
+            logger.LogDebug("Cache hit for {Name}", normalizedName);
+            return cached;
+        }
+
+        var pokemonInfo = await client.GetPokemonInfoAsync(normalizedName, cancellationToken);
+        if(pokemonInfo is null)
+        {
+            return null;
+        }
+        cache.Set(cacheKey, pokemonInfo, TimeSpan.FromMinutes(5));
+        return pokemonInfo;
     }
 }
