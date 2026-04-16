@@ -25,6 +25,6 @@ public class TranslationClient(
 
         logger.LogDebug("Sending translation request for style {Style} with text: {Text}", style, text);
 
-        return await httpClient.PostAsync($"{style}.json", content, cancellationToken);
+        return await httpClient.PostAsync($"{style}", content, cancellationToken);
     }
 }

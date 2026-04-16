@@ -17,9 +17,19 @@ public class TranslationApiService(ITranslationClient client, ILogger<Translatio
 
         var response = await client.TranslateAsync(originalText, style, cancellationToken);
 
-        if (response is null || !response.IsSuccessStatusCode)
+        if (response is null)
+        {
+            logger.LogInformation("Translation API returned no reponse. Falling back to original text.");
             return originalText;
+        }
 
+        if (!response.IsSuccessStatusCode)
+        {
+            logger.LogInformation(
+                "Translation API failed with status code {StatusCode}. Falling back to original text.",
+                response.StatusCode);
+            
+        }
         try
         {
             var json = await response.Content.ReadAsStringAsync(cancellationToken);
