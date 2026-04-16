@@ -81,19 +81,17 @@ public class PokemonApiService(
             });
         }
 
-        var description = info.FlavorTextEntries
-            .FirstOrDefault(e => e.Language?.Name == "en")?
-            .FlavorText ?? "";
+        var dto = PokemonMapper.ToInfoDto(info);
+        var description = dto.Description;
 
-        if (string.IsNullOrWhiteSpace(description))
+        if (string.IsNullOrWhiteSpace(description) || description == "No english description available")
         {
-            var dtoNoTranslation = PokemonMapper.ToInfoDto(info);
-            return TypedResults.Ok(dtoNoTranslation);
+            return TypedResults.Ok(dto);
         }
 
         string style = info.Habitat?.Name?.ToLower() == "cave" || info.IsLegendary
-            ? "yoda"
-            : "shakespeare";
+            ? "yodish"
+            : "shakespeare-english";
         
         var normalizedName = name.Trim().ToLowerInvariant();
 
@@ -103,14 +101,12 @@ public class PokemonApiService(
         {
             return TypedResults.Ok(cacheTranslated);
         }
-        
-        string translated = await translationService.TranslateAsync(description, style, cancellationToken);
 
-        var dto = PokemonMapper.ToInfoDto(info) with { Description = translated };
+        string translated = await translationService.TranslateAsync(description, style, cancellationToken);
 
         cache.Set(translatedCacheKey, dto, TimeSpan.FromMinutes(5));
 
-        return TypedResults.Ok(dto);
+        return TypedResults.Ok(dto with {Description = translated});
     }
 
     private async Task<PokemonInfoApiModel?> GetPokemonInfoModelAsync(string name, CancellationToken cancellationToken)
