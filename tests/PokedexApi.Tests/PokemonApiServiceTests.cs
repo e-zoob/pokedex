@@ -138,20 +138,28 @@ namespace PokedexApi.Tests
         {
             // Arrange
             var pokemonName = "pikachu";
+            var pokemonKey = $"pokemon-info:{pokemonName}";
 
 
             validatorMock.Setup(v => v.Validate(pokemonName))
                 .Returns(new ValidationResult());
 
-            var cachedDto = new PokemonInfoDto
+            var cachedApiModel = new PokemonInfoApiModel
             {
                 Name = "pikachu",
-                Habitat = "forest",
+                Habitat = new Habitat { Name = "forest" },
                 IsLegendary = false,
-                Description = "Cached description"
+                FlavorTextEntries =
+                [
+                    new()
+                    {
+                        FlavorText = "Cached description",
+                        Language = new Language { Name = "en" }
+                    }
+                ]
             };
 
-            memoryCache.Set(pokemonName, cachedDto);
+            memoryCache.Set(pokemonKey, cachedApiModel);
 
             var service = CreateService();
 
@@ -167,6 +175,10 @@ namespace PokedexApi.Tests
 
             pokemonInfo.Should().NotBeNull();
             pokemonInfo.Should().BeOfType<PokemonInfoDto>();
+            pokemonInfo!.Name.Should().Be("pikachu");
+            pokemonInfo.Habitat.Should().Be("forest");
+            pokemonInfo.Description.Should().Be("Cached description");
+            pokemonInfo.IsLegendary.Should().BeFalse();
 
             clientMock.Verify(c => c.GetPokemonInfoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         }
