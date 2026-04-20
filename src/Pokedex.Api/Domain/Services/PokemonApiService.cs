@@ -50,8 +50,6 @@ public class PokemonApiService(
 
         var dto = PokemonMapper.ToInfoDto(pokemonInfo);
 
-        cache.Set(name, dto, TimeSpan.FromMinutes(5));
-
         return TypedResults.Ok(dto);
     }
 
@@ -89,7 +87,7 @@ public class PokemonApiService(
             return TypedResults.Ok(dto);
         }
 
-        string style = info.Habitat?.Name?.ToLower() == "cave" || info.IsLegendary
+        var style = info.Habitat?.Name?.ToLower() == "cave" || info.IsLegendary
             ? "yodish"
             : "shakespeare-english";
         
@@ -102,11 +100,12 @@ public class PokemonApiService(
             return TypedResults.Ok(cacheTranslated);
         }
 
-        string translated = await translationService.TranslateAsync(description, style, cancellationToken);
+        var translated = await translationService.TranslateAsync(description, style, cancellationToken);
+        var translatedDto = dto with { Description = translated };
 
-        cache.Set(translatedCacheKey, dto, TimeSpan.FromMinutes(5));
+        cache.Set(translatedCacheKey, translatedDto, TimeSpan.FromMinutes(5));
 
-        return TypedResults.Ok(dto with {Description = translated});
+        return TypedResults.Ok(translatedDto);
     }
 
     private async Task<PokemonInfoApiModel?> GetPokemonInfoModelAsync(string name, CancellationToken cancellationToken)
