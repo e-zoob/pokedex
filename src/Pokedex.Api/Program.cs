@@ -39,11 +39,11 @@ builder.Services.Configure<TranslationApiOptions>(
 // infra
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient<IPokemonInfoClient, PokemonInfoClient>();
+builder.Services.AddHttpClient<ITranslationClient, TranslationClient>();
 
 // business
 builder.Services.AddScoped<IPokemonApiService, PokemonApiService>();
 builder.Services.AddScoped<IPokemonNameValidator, PokemonNameValidator>();
-builder.Services.AddScoped<ITranslationClient, TranslationClient>();
 builder.Services.AddScoped<ITranslationApiService, TranslationApiService>();
 
 builder.Services.AddEndpointsApiExplorer();
